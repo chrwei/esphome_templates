@@ -1,0 +1,99 @@
+substitutions:
+  device_name: "cr-mini-n2"
+  device_friendly_name: "CR-MINI-N2"
+  restore_mode: RESTORE_DEFAULT_OFF # Try to restore the mode, fallback to off
+  update_interval: 10min
+
+esphome:
+  name: "${device_name}"
+  friendly_name: ${device_friendly_name}
+  name_add_mac_suffix: true
+  project:
+    name: "readylyze.${device_friendly_name}"
+    version: "1.0.0"
+
+dashboard_import:
+  package_import_url: github://chrwei/esphome_templates/cr-mini-n2/cr-mini-n2.yaml@main
+  import_full_config: True
+
+bk72xx:
+  board: cb2s
+
+# Enable logging
+logger:
+
+api:
+
+ota:
+
+wifi:
+  ap: {}
+
+web_server:
+
+text_sensor:
+  - platform: version
+    name: ESPHome Version
+  - platform: wifi_info
+    ip_address:
+      name: IP Address
+    ssid:
+      name: SSID
+    bssid:
+      name: BSSID
+
+sensor:
+  - platform: wifi_signal
+    name: WiFi Signal
+    update_interval: ${update_interval}
+  - platform: uptime
+    name: Uptime
+    unit_of_measurement: h
+    filters:
+      - lambda: return int((x + 1800.0) / 3600.0);
+
+light:
+  - platform: status_led
+    internal: true
+    id: "led"
+    pin:
+      number: P8
+      inverted: False
+    restore_mode: RESTORE_DEFAULT_OFF
+
+binary_sensor:
+  - platform: status
+    name: Status
+  - platform: gpio
+    internal: true
+    pin:
+      number: P11
+      inverted: True
+    name: "Button"
+    on_press:
+      then:
+        - switch.toggle: "relay"
+  - platform: gpio
+    internal: true
+    pin:
+      number: P7
+      inverted: True
+    name: "S1 Contact (S2 is Common/N)"
+    on_state:
+      then:
+        - switch.toggle: "relay"
+
+switch:
+  - platform: restart
+    name: Restart
+  - platform: gpio
+    pin:
+      number: P24
+      inverted: False
+    name: "Switch"
+    id: relay
+    restore_mode: ${restore_mode}
+    on_turn_on:
+      - light.turn_on: led
+    on_turn_off:
+      - light.turn_off: led
