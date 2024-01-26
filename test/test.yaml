@@ -13,8 +13,8 @@ esphome:
 dashboard_import:
   package_import_url: github://chrwei/esphome_templates/test/test.yaml@main
 
-esp8266:
-  board: d1_mini
+bk72xx:
+  board: cb2s
 
 # Enable logging
 logger:
