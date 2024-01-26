@@ -1,0 +1,31 @@
+substitutions:
+  device_name: "thingie"
+  device_friendly_name: "thingie"
+
+esphome:
+  name: "${device_name}"
+  friendly_name: ${device_friendly_name}
+  name_add_mac_suffix: true
+  project:
+    name: "foo.${device_friendly_name}"
+    version: "1.0.0"
+
+dashboard_import:
+  package_import_url: github://chrwei/esphome_templates/test/test.yaml@main
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+api:
+
+ota:
+
+wifi:
+  ap: {}
+
+web_server:
+
+captive_portal:
